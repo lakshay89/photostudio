@@ -1,0 +1,61 @@
+.PremiumTopSec{
+    text-align: center;
+    padding:60px;
+}
+
+
+.PremiumTopSec h3{
+    font-size: 2.25rem;
+    font-weight: 700;
+}
+
+.PremiumTopSec p{
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    max-width: 42rem;
+}
+
+.paraPremium{
+    display: flex;
+    justify-content: center;
+}
+
+.PremiumImage{
+    height:300px;
+    width: 100%;
+}
+
+
+.PremiumDetailSection{
+    padding:10px;
+}
+
+
+.PremiumDetailSection h4{
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+
+.PremiumDetailSection p{
+   color:rgb(75 85 99);
+}
+.listtext{
+     font-size:0.875rem;
+     color: rgb(55 65 81);
+}
+
+
+@media (max-width:768px){
+    .PremiumTopSec p {
+        font-size: .9rem;
+        line-height: 1.3rem;
+       
+    }
+    .PremiumTopSec h3 {
+        font-size: 1.8rem;
+      
+    }
+}
+

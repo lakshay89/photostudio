@@ -1,0 +1,157 @@
+.contact-section {
+    background-color: #fff;
+    font-family: "Poppins", sans-serif;
+    color: #002b45;
+  }
+  
+  /* Title & Subtext */
+  .contact-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #002b45;
+  }
+  
+  .contact-subtext {
+    color: #555;
+    line-height: 1.6;
+    max-width: 750px;
+  }
+  .info-item{
+    height: 130px;
+    padding: 15px;
+    background-color: aliceblue;
+  }
+  .download-box{
+    width: 50%;
+    height: 100%;
+  }
+  .contactColSec{
+    gap:10px;
+    display: flex;
+ align-items: center;
+ justify-content: center;
+  }
+  /* Contact Info */
+  .contact-info h6 {
+    font-weight: 600;
+    color: #14b8a6;
+  }
+  
+  .contact-info p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .contact-info a {
+    color: #00a6c9;
+    text-decoration: none;
+  }
+  
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Contact Form */
+  .contact-form {
+    background-color: #b4f6ee;
+    border-radius: 12px;
+  }
+  
+  .contact-form .form-control {
+    border-radius: 25px;
+    border: none;
+    padding: 12px 18px;
+    font-size: 0.95rem;
+  }
+  
+  .contact-form .form-control:focus {
+    box-shadow: none;
+    outline: 2px solid gray;
+  }
+  
+  .send-btn {
+    background-color: #32d5c29b;
+    border: none;
+    border-radius: 25px;
+    padding: 10px;
+    color: #fff;
+    font-weight: 500;
+    transition: background 0.3s;
+  }
+  
+  .send-btn:hover {
+    background-color: #14b8a6;
+    border:1px solid gray;
+  }
+  
+  /* Download Box */
+  .download-box {
+    background-color: #14b8a6;
+    color: #fff;
+    border-radius: 12px;
+  }
+
+  .download-box p {
+    text-align: left;
+  }
+
+  
+  .download-box h5 {
+    font-weight: 600;
+  }
+  
+  .download-btn {
+    border-radius: 25px;
+    font-weight: 500;
+    padding: 8px 25px;
+    background-color: #fff;
+    color: #002b45;
+    border: none;
+  }
+  
+  /* Footer Box */
+  .footer-box {
+    background-color: #14b8a6;
+    color: #fff;
+    border-radius: 12px;
+  }
+  
+  .footer-box .social-icons i {
+    font-size: 1.3rem;
+    margin-right: 12px;
+    cursor: pointer;
+  }
+  
+  .footer-box .social-icons i:hover {
+    opacity: 0.8;
+  }
+  
+  .footer-links li {
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .footer-links li:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .contact-title,
+    .contact-subtext {
+      text-align: center;
+    }
+  
+    .footer-box,
+    .download-box {
+      text-align: center;
+    }
+  
+    .footer-box .footer-links {
+      justify-content: center;
+    }
+  
+    .footer-box .social-icons {
+      justify-content: center;
+    }
+  }
+  

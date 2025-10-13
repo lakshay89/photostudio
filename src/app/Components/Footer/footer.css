@@ -1,0 +1,64 @@
+/* footer.css */
+
+.footer-section {
+    background: linear-gradient(to right,   #14b8a6);
+    color: white;
+    border-top-left-radius: 60px;
+    border-bottom-right-radius: 60px;
+  }
+  
+  .footer-logo {
+    font-family: cursive;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .footer-heading {
+    border-bottom: 2px solid white;
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .footer-section a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .footer-section a:hover {
+    text-decoration: underline;
+  }
+  
+  .social-icons a {
+    margin-right: 10px;
+    font-size: 20px;
+    color: white;
+    transition: 0.3s;
+  }
+  
+  .social-icons a:hover {
+    color: #aaa;
+  }
+  
+  .newsletter-form input {
+    background: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+  }
+  
+  .newsletter-form button {
+    background: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+
+  @media (max-width:768px){
+    .footerRow{
+       text-align: center;
+    }
+  }

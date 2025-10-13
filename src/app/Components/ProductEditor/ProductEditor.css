@@ -1,0 +1,76 @@
+/* ✅ Modal sizing */
+.modal-lg {
+  max-width: 900px; /* adjust if needed */
+}
+.modal-body {
+  max-height: 77vh; /* limit modal body height */
+  overflow-y: auto;
+}
+
+/* ✅ Crop container (responsive inside modal) */
+.crop-container {
+  position: relative;
+  width: 35%;        /* take full modal width */
+  background: #eee;
+  overflow: hidden;
+  border-radius: 8px;
+  margin: 0 auto;
+  max-width: 400px;   /* optional fixed width to keep small */
+}
+
+/* Vertical aspect (3:4) */
+.crop-container.vertical {
+  padding-top: 35%; /* 50% of 125% if you want smaller, or 125% for full */
+}
+
+/* Horizontal aspect (4:3) */
+.crop-container.horizontal {
+  padding-top: 35%;   /* 50% of 70% if you want smaller, or 70% for full */
+}
+
+/* ✅ React Easy Crop inner container */
+.reactEasyCrop_Container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  cursor: move;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* No fixed width/height here! Let .crop-container control it */
+  width: 300px;
+  height: 300px;
+}
+
+/* ✅ Crop area border (optional styling) */
+.reactEasyCrop_CropArea {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0 0 0 9999em;
+  color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+   width: 150px !important;
+    height: 150px;
+}
+
+/* ✅ Draggable text styling */
+.draggable-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: move;
+  user-select: none;
+  color: #000;
+}

@@ -1,0 +1,132 @@
+/* checkout.css */
+
+.checkout-page {
+    background-color: #f1f1f1;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .checkout-page .card {
+    border-radius: 16px;
+    border: none;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .checkout-page h4 {
+    font-weight: 600;
+    color: #000;
+  }
+  
+  .checkout-page input.form-control {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    color: #212529;
+    transition: all 0.3s ease;
+  }
+  
+  .checkout-page input:focus {
+    border-color: #14b8a6;;
+    box-shadow: 0 0 0 0.2rem rgba(8, 86, 110, 0.2);
+    background-color: #ffffff;
+  }
+  
+  .step-tracker .nav-link {
+    background-color: #dee2e6;
+    color: #000;
+    border-radius: 50px;
+    padding: 8px 20px;
+    margin: 0 5px;
+    font-weight: 500;
+  }
+  
+  .step-tracker .nav-link.active {
+    background-color: #14b8a6;;
+    color: #fff;
+  }
+  
+  .payment-options {
+    margin-top: 10px;
+  }
+  
+  .payment-box {
+    padding: 16px 20px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 180px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .payment-box:hover {
+    border-color: #14b8a6;;
+    background-color: #e6f0f3;
+  }
+  
+  .payment-box.selected {
+    border-color: #14b8a6;;
+    background-color: #d4e6eb;
+    box-shadow: 0 4px 10px rgba(8, 86, 110, 0.2);
+  }
+  
+  .payment-box label {
+    color: #14b8a6;;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .button-success {
+    background-color: #14b8a6;;
+    border-color: #14b8a6;;
+    border-radius: 10px;
+    padding: 14px;
+    font-weight: 600;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-success:hover {
+    background-color: #14b8a6;;
+    border-color: #14b8a6;;
+  }
+  
+  .btn-dark {
+    background-color: #000;
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-dark:hover {
+    background-color: #222;
+  }
+  
+  .order-summary .fw-bold {
+    color: #000;
+  }
+  
+  .text-muted {
+    color: #6c757d !important;
+  }
+  
+  @media (max-width: 768px) {
+    .payment-box {
+      min-width: 100%;
+    }
+  
+    .checkout-page .card {
+      padding: 1.5rem 1rem;
+    }
+  
+    .step-tracker .nav-link {
+      font-size: 14px;
+      padding: 6px 12px;
+    }
+  }
+  

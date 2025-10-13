@@ -1,0 +1,86 @@
+.BannerMainSec{
+    height:100vh;
+    width: 100vw;
+    background-image:linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("../../Assets/Images/banner.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* position: relative; */
+
+}
+.TextSection{
+    text-align: center;
+}
+.mainBannerTitle{
+    color: white;
+    font-size: 3.75rem;
+    font-weight: 700;
+}
+.BannerPara{
+    font-size: 1.25rem;
+    color:white;
+    width: 60%;
+}
+.ParaSection{
+    display: flex;
+    justify-content: center;
+}
+.mainBannerSubTitle{
+    font-size: 3.75rem;
+    color:#14b8a6 ;
+    font-weight: 700;
+}
+.BannerBtn1{
+    padding:18px;
+    font-weight: 600;
+    background-color: #14b8a6;
+    color: white;
+    font-size: 1.125rem;
+    border:none;
+    border-radius: 50px;
+
+}
+.BannerBtn2{
+    padding:18px 25px;
+    font-weight: 600;
+    border:none;
+    background-color: transparent;
+    border:2px solid white;
+    color: white;
+    font-size: 1.125rem;
+    
+    border-radius: 50px;
+
+}
+
+.BannerBtnSec{
+    margin-top:30px;
+    display: flex;
+    justify-content: center;
+    gap:10px;
+}
+
+
+@media (max-width:768px){
+    .mainBannerTitle {
+        font-size: 1.4rem;
+       
+    }
+
+    .mainBannerSubTitle {
+        font-size: 1.75rem;
+        color: #14b8a6;
+        font-weight: 700;
+    }
+    .BannerPara{
+        font-size: 0.9rem;
+    }
+    .BannerBtn1{
+        font-size: 12px;
+    }
+    .BannerBtn2{
+        font-size: 12px;
+    }
+}
