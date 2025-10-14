@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ProductEditor from '../Components/ProductEditor/ProductEditor';
+import './page.css'
 
 // CardSlider: unique default, 2s delay, 1s fade, pause on hover, preload, cleanup
 function CardSlider({ images, defaultImage, alt }) {
@@ -163,7 +164,8 @@ export default function Page() {
               <div className="card-body text-center d-flex flex-column">
                 <h5 className="card-title mb-3">{product.title}</h5>
                 <button
-                  className="btn btn-danger mt-auto"
+                  className="btn mt-auto button-89"
+                  // style={{backgroundColor:'#20c997', color:'white'}}
                   onClick={() => setShowEditor(true)}
                 >
                   Customise

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
+import Image from "next/image";
 
 const LANDSCAPE = [
   { label: "12×9", w: 12, h: 9, price: 699 },
@@ -8,7 +9,7 @@ const LANDSCAPE = [
   { label: "21×15", w: 21, h: 15, price: 1999 },
   { label: "30×20", w: 30, h: 20, price: 3499 },
   { label: "35×23", w: 33, h: 23, price: 4499 },
-  { label: "48×36", w: 41, h: 30, price: 5999 },
+  { label: "48×36", w: 37, h: 27, price: 5999 },
 ];
 
 const PORTRAIT = LANDSCAPE.map((s) => ({
@@ -26,15 +27,15 @@ function sizeScale(selected, base) {
 
 export default function PreviewModal({ show, onClose, uploadedImage }) {
   const [photoUrl, setPhotoUrl] = useState(null);
-  const [orientation, setOrientation] = useState("landscape");
-  const [selected, setSelected] = useState(LANDSCAPE[0]);
+  const [orientation, setOrientation] = useState("portrait"); // ✅ Default vertical only
+  const [selected, setSelected] = useState(PORTRAIT[0]);
   const [thickness, setThickness] = useState("3mm");
 
-  const sizes = orientation === "landscape" ? LANDSCAPE : PORTRAIT;
+  const sizes = PORTRAIT; // ✅ Only vertical sizes
   const base = sizes[0];
   const scale = sizeScale(selected, base);
 
-  // Handle uploaded image and auto orientation
+  // Handle uploaded image
   useEffect(() => {
     if (!uploadedImage) return setPhotoUrl(null);
 
@@ -44,15 +45,11 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
 
     setPhotoUrl(url);
 
-    const img = new Image();
+  const img = new window.Image();
     img.onload = () => {
-      if (img.naturalWidth > img.naturalHeight) {
-        setOrientation("landscape");
-        setSelected(LANDSCAPE[0]);
-      } else {
-        setOrientation("portrait");
-        setSelected(PORTRAIT[0]);
-      }
+      // ✅ Always vertical orientation only
+      setOrientation("portrait");
+      setSelected(PORTRAIT[0]);
     };
     img.src = url;
 
@@ -93,25 +90,29 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
       style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
     >
       <div className="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div className="modal-content">
+        <div className="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
           {/* HEADER */}
-          <div className="modal-header">
-            <h5 className="modal-title fw-semibold">OMGS® Wall Preview</h5>
+          <div className="modal-header" style={{ borderBottom: "2px solid #20c997" }}>
+            <h5 className="modal-title fw-semibold text-dark">OMGS® Wall Preview</h5>
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
 
           {/* BODY */}
           <div className="modal-body">
-            <div className="row g-4">
+            <div className="row g-4 flex-wrap">
               {/* LEFT SIDE */}
-              <div className="col-lg-7">
+              <div className="col-lg-7 col-md-12">
                 {/* Orientation toggle */}
                 <div className="d-flex align-items-center gap-2 mb-3">
-                  <div className="btn-group">
+                  <div className="btn-group w-100">
                     <button
-                      className={`btn btn-outline-primary ${
-                        orientation === "portrait" ? "active" : ""
-                      }`}
+                      className={`btn ${orientation === "portrait" ? "btn-success" : "btn-outline-success"}`}
+                      style={{
+                        backgroundColor: orientation === "portrait" ? "#20c997" : "transparent",
+                        color: orientation === "portrait" ? "#fff" : "#20c997",
+                        borderColor: "#20c997",
+                        fontWeight: "600",
+                      }}
                       onClick={() => {
                         setOrientation("portrait");
                         setSelected(PORTRAIT[0]);
@@ -120,6 +121,9 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
                     >
                       Vertical
                     </button>
+
+                    {/* ❌ Commented Horizontal button */}
+                    {/*
                     <button
                       className={`btn btn-outline-primary ${
                         orientation === "landscape" ? "active" : ""
@@ -132,12 +136,13 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
                     >
                       Horizontal
                     </button>
+                    */}
                   </div>
                 </div>
 
                 {/* Wall Mockup */}
                 <div
-                  className="position-relative w-100 rounded shadow"
+                  className="position-relative w-100 rounded shadow-sm"
                   style={{
                     aspectRatio: "4/3",
                     backgroundImage: "url('/mockup/wall-frame.png')",
@@ -146,9 +151,34 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
                     overflow: "hidden",
                   }}
                 >
-                  {/* Dimension Labels */}
+                  {/* Centered upload button background (visible when no photo) */}
+                  {!photoUrl && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        display: "grid",
+                        placeItems: "center",
+                        pointerEvents: "none",
+                        zIndex: 2,
+                      }}
+                    >
+                      <div style={{ width: "40%", height: "40%", position: "relative" }}>
+                        <Image
+                          src="/mockup/upload-button.png"
+                          alt="Upload"
+                          fill
+                          unoptimized
+                          crossOrigin="anonymous"
+                          style={{ objectFit: "contain", zIndex: 2 }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   {photoUrl && (
                     <>
+                      {/* Dimension Labels */}
                       <div
                         style={{
                           position: "absolute",
@@ -190,57 +220,61 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
                       >
                         Thickness: {thickness}
                       </div>
+
+                      {/* Uploaded Image */}
+                      <div
+                        className="position-absolute"
+                        style={{
+                          left: `${FRAME_RECT_PCT.left}%`,
+                          // top: `${FRAME_RECT_PCT.top}%`,
+                          top: `34%`,
+                          width: `${FRAME_RECT_PCT.width}%`,
+                          height: `${FRAME_RECT_PCT.height}%`,
+                          transform: `scale(${scale * 0.75})`,
+                          transformOrigin: "center",
+                          transition: "transform .25s ease",
+                          display: "grid",
+                          placeItems: "center",
+                        }}
+                      >
+                        <div
+                          className="w-100 h-100"
+                          style={{
+                            backgroundImage: `url(${photoUrl})`,
+                            backgroundSize: "cover", // ✅ Cover full area
+                            backgroundPosition: "center",
+                            borderRadius: "6px",
+                            boxShadow: getShadow(),
+                          }}
+                        />
+                      </div>
                     </>
                   )}
-
-                  {/* Uploaded Image */}
-                  <div
-                    className="position-absolute"
-                    style={{
-                      marginTop: "67px",
-                      left: `${FRAME_RECT_PCT.left}%`,
-                      top: `${FRAME_RECT_PCT.top}%`,
-                      width: `${FRAME_RECT_PCT.width}%`,
-                      height: `${FRAME_RECT_PCT.height}%`,
-                      transform: `scale(${scale * 0.75})`,
-                      transformOrigin: "center",
-                      transition: "transform .25s ease",
-                      display: "grid",
-                      placeItems: "center",
-                    }}
-                  >
-                    <div
-                      className="w-100 h-100 mt-5"
-                      style={{
-                        backgroundImage: `url(${photoUrl})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        boxShadow: getShadow(),
-                      }}
-                    />
-                  </div>
                 </div>
               </div>
 
               {/* RIGHT SIDE */}
-              <div className="col-lg-5">
-                {/* PRICE */}
-                <h4 className="fw-semibold mb-2">₹ {total}</h4>
+              <div className="col-lg-5 col-md-12">
+                <h4 className="fw-semibold mb-2 text-dark">₹ {total}</h4>
                 <p className="text-success small mb-3">Only 8 Acrylic's left!</p>
 
                 {/* SIZE OPTIONS */}
                 <div className="mb-3">
-                  <h6 className="fw-semibold mb-2">Acrylic Size (Inch)</h6>
+                  <h6 className="fw-semibold mb-2 text-dark">Acrylic Size (Inch)</h6>
                   <div className="d-flex flex-wrap gap-2">
                     {sizes.map((s) => (
                       <button
                         key={s.label}
                         className={`btn btn-sm ${
-                          selected.label === s.label
-                            ? "btn-dark"
-                            : "btn-outline-dark"
+                          selected.label === s.label ? "btn-success" : "btn-outline-success"
                         }`}
                         onClick={() => setSelected(s)}
+                        style={{
+                          borderColor: "#20c997",
+                          backgroundColor: selected.label === s.label ? "#20c997" : "transparent",
+                          color: selected.label === s.label ? "#fff" : "#20c997",
+                          fontWeight: 600,
+                        }}
                       >
                         {s.label}
                       </button>
@@ -250,28 +284,20 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
 
                 {/* THICKNESS OPTIONS */}
                 <div className="mb-4">
-                  <h6 className="fw-semibold mb-2">Acrylic Thickness</h6>
-                  <div className="btn-group">
+                  <h6 className="fw-semibold mb-2 text-dark">Acrylic Thickness</h6>
+                  <div className="btn-group flex-wrap">
                     {["3mm", "5mm", "8mm"].map((t) => (
                       <button
                         key={t}
-                        className={`btn btn-outline-dark ${
-                          thickness === t ? "active" : ""
-                        }`}
+                        className={`btn ${thickness === t ? "btn-success" : "btn-outline-success"}`}
                         onClick={() => setThickness(t)}
                         style={{
-                          border:
-                            thickness === t
-                              ? "2px solid #000"
-                              : "1px solid #ccc",
-                          background: thickness === t ? "#111" : "#fff",
-                          color: thickness === t ? "#fff" : "#111",
-                          marginRight: 8,
-                          padding: "8px 18px",
-                          borderRadius: 20,
+                          borderColor: "#20c997",
+                          backgroundColor: thickness === t ? "#20c997" : "transparent",
+                          color: thickness === t ? "#fff" : "#20c997",
                           fontWeight: 600,
-                          cursor: "pointer",
-                          transition: "all 0.2s",
+                          marginRight: 6,
+                          marginBottom: 6,
                         }}
                       >
                         {t}
@@ -281,8 +307,13 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
                 </div>
 
                 <button
-                  className="btn btn-danger btn-lg w-100"
+                  className="btn btn-success btn-lg w-100 fw-semibold"
                   disabled={!photoUrl}
+                  style={{
+                    backgroundColor: "#20c997",
+                    borderColor: "#20c997",
+                    transition: "all 0.2s",
+                  }}
                 >
                   Buy it now
                 </button>
@@ -291,8 +322,18 @@ export default function PreviewModal({ show, onClose, uploadedImage }) {
           </div>
 
           {/* FOOTER */}
-          <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={onClose}>
+          <div
+            className="modal-footer border-0"
+            style={{ backgroundColor: "#f9f9f9" }}
+          >
+            <button
+              className="btn btn-outline-success px-4 fw-semibold"
+              onClick={onClose}
+              style={{
+                borderColor: "#20c997",
+                color: "#20c997",
+              }}
+            >
               Close
             </button>
           </div>

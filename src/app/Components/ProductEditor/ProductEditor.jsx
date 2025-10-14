@@ -3,45 +3,50 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { Rnd } from "react-rnd";
-import html2canvas from "html2canvas"; // ✅ added
+import html2canvas from "html2canvas";
 import PreviewModal from "./PreviewModal";
 
 export default function ProductEditor({ show, onClose }) {
   const [uploadedImage, setUploadedImage] = useState(null);
-  const [mergedImage, setMergedImage] = useState(null); // ✅ new: store final merged image
-  const [text, setText] = useState("type name");
-  const [textColor, setTextColor] = useState("#ff0000");
-  const [orientation, setOrientation] = useState("horizontal");
-  const [isLandscape, setIsLandscape] = useState(true);
+  const [mergedImage, setMergedImage] = useState(null);
+  const [orientation] = useState("vertical"); // ✅ locked vertical only
   const [showPreview, setShowPreview] = useState(false);
+  const [scale, setScale] = useState(1); // ✅ for zoom in/out
 
   const [imageSize, setImageSize] = useState({ width: 200, height: 200 });
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const pointerDownRef = useRef({ down: false, x: 0, y: 0 });
 
-  // Handle file upload and detect aspect ratio
+  // ✅ Upload image (only vertical allowed)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setUploadedImage(url);
-
       const img = new window.Image();
       img.src = url;
       img.onload = () => {
-        setIsLandscape(img.width > img.height);
+        if (img.width > img.height) {
+          alert("Please upload a vertical (portrait) image only.");
+          return;
+        }
+
+        setUploadedImage(url);
         if (containerRef.current) {
           const { offsetWidth, offsetHeight } = containerRef.current;
           const imgRatio = img.width / img.height;
           const boxRatio = offsetWidth / offsetHeight;
+
           let newWidth, newHeight;
-          if (imgRatio > boxRatio) {
+          if (imgRatio < boxRatio) {
             newWidth = offsetWidth;
             newHeight = offsetWidth / imgRatio;
           } else {
             newHeight = offsetHeight;
             newWidth = offsetHeight * imgRatio;
           }
+
           setImageSize({ width: newWidth, height: newHeight });
           setImagePosition({
             x: (offsetWidth - newWidth) / 2,
@@ -52,10 +57,14 @@ export default function ProductEditor({ show, onClose }) {
     }
   };
 
-  // ✅ Save handler: merge image + text into one image using html2canvas
+  // ✅ Zoom handlers
+  const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.1, 3));
+  const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.1, 0.5));
+
+  // ✅ Save merged image
   const handleSave = async () => {
     if (!containerRef.current) {
-      alert("Please upload and customize your image first!");
+      alert("Please upload your image first!");
       return;
     }
 
@@ -63,17 +72,14 @@ export default function ProductEditor({ show, onClose }) {
       const canvas = await html2canvas(containerRef.current, {
         backgroundColor: null,
         useCORS: true,
-        scale: 2, // High quality
+        scale: 2,
       });
-
       const dataUrl = canvas.toDataURL("image/png");
-      setMergedImage(dataUrl); // ✅ save merged result
-
-      // Close editor and open Preview Modal
+      setMergedImage(dataUrl);
       onClose();
       setTimeout(() => setShowPreview(true), 300);
     } catch (err) {
-      console.error("Error generating preview image:", err);
+      console.error("Error generating preview:", err);
     }
   };
 
@@ -96,54 +102,13 @@ export default function ProductEditor({ show, onClose }) {
 
               {/* BODY */}
               <div className="modal-body">
-                {/* Orientation buttons */}
-                <div className="mb-3">
-                  <div className="btn-group" role="group">
-                    <button
-                      type="button"
-                      className={`btn btn-${
-                        orientation === "vertical" ? "primary" : "outline-primary"
-                      }`}
-                      onClick={() => setOrientation("vertical")}
-                    >
-                      Vertical
-                    </button>
-                    <button
-                      type="button"
-                      className={`btn btn-${
-                        orientation === "horizontal" ? "primary" : "outline-primary"
-                      }`}
-                      onClick={() => setOrientation("horizontal")}
-                    >
-                      Horizontal
-                    </button>
-                  </div>
-                </div>
-
-                {/* Upload + Color */}
-                <div className="d-flex align-items-center gap-2 mb-3">
+                {/* Hidden file input (we trigger it via clicks on the upload area) */}
+                <div className="mb-3" style={{ display: "none" }}>
                   <input
+                    ref={fileInputRef}
                     type="file"
                     accept="image/*"
-                    className="form-control"
                     onChange={handleFileChange}
-                  />
-                  <input
-                    type="color"
-                    value={textColor}
-                    onChange={(e) => setTextColor(e.target.value)}
-                    className="form-control form-control-color"
-                  />
-                </div>
-
-                {/* Text Input */}
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Enter text"
                   />
                 </div>
 
@@ -152,43 +117,74 @@ export default function ProductEditor({ show, onClose }) {
                   ref={containerRef}
                   className="border rounded position-relative mx-auto bg-light"
                   style={{
-                    width:
-                      orientation === "horizontal"
-                        ? isLandscape
-                          ? "500px"
-                          : "350px"
-                        : isLandscape
-                        ? "350px"
-                        : "300px",
-                    height:
-                      orientation === "horizontal"
-                        ? isLandscape
-                          ? "300px"
-                          : "400px"
-                        : isLandscape
-                        ? "400px"
-                        : "500px",
+                    width: "350px",
+                    height: "500px",
                     overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  // detect simple clicks (no drag) to open file picker
+                  onMouseDown={(e) => {
+                    pointerDownRef.current = { down: true, x: e.clientX, y: e.clientY };
+                  }}
+                  onMouseUp={(e) => {
+                    const pd = pointerDownRef.current;
+                    pointerDownRef.current.down = false;
+                    if (!pd) return;
+                    const dx = e.clientX - pd.x;
+                    const dy = e.clientY - pd.y;
+                    if (Math.hypot(dx, dy) < 6) {
+                      // treat as click, open file picker
+                      fileInputRef.current?.click();
+                    }
+                  }}
+                  onTouchStart={(e) => {
+                    const t = e.touches[0];
+                    pointerDownRef.current = { down: true, x: t.clientX, y: t.clientY };
+                  }}
+                  onTouchEnd={(e) => {
+                    const pd = pointerDownRef.current;
+                    pointerDownRef.current.down = false;
+                    // touchend has no coordinates; use changedTouches if available
+                    const t = e.changedTouches && e.changedTouches[0];
+                    if (!pd || !t) return;
+                    const dx = t.clientX - pd.x;
+                    const dy = t.clientY - pd.y;
+                    if (Math.hypot(dx, dy) < 6) {
+                      fileInputRef.current?.click();
+                    }
                   }}
                 >
-                  {/* Wall Background */}
-                  <Image
-                    src="/Images/wall-background.png"
-                    alt="Background"
-                    fill
-                    style={{ objectFit: "cover", zIndex: 1 }}
-                  />
+                  {/* Centered upload button visible only when no image uploaded */}
+                  {!uploadedImage && (
+                    <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", pointerEvents: "none", zIndex: 1 }}>
+                      <div style={{ width: "50%", height: "50%", position: "relative" }}>
+                        <Image
+                          src="/mockup/upload-button.png"
+                          alt="Upload button"
+                          fill
+                          unoptimized
+                          crossOrigin="anonymous"
+                          style={{ objectFit: "contain", zIndex: 1 }}
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   {/* Uploaded Image */}
                   {uploadedImage && (
                     <Rnd
-                      size={imageSize}
+                      size={{
+                        width: imageSize.width * scale,
+                        height: imageSize.height * scale,
+                      }}
                       position={imagePosition}
                       onDragStop={(e, d) => setImagePosition({ x: d.x, y: d.y })}
                       onResizeStop={(e, direction, ref, delta, position) => {
                         setImageSize({
-                          width: ref.offsetWidth,
-                          height: ref.offsetHeight,
+                          width: ref.offsetWidth / scale,
+                          height: ref.offsetHeight / scale,
                         });
                         setImagePosition(position);
                       }}
@@ -204,50 +200,41 @@ export default function ProductEditor({ show, onClose }) {
                         src={uploadedImage}
                         alt="Uploaded"
                         fill
-                        style={{ objectFit: "contain" }}
+                        unoptimized
+                        crossOrigin="anonymous"
+                        style={{ objectFit: "cover" }}
                       />
                     </Rnd>
                   )}
-
-                  {/* Editable Text */}
-                  <Rnd
-                    bounds="parent"
-                    default={{ x: 100, y: 200, width: 150, height: 40 }}
-                    enableResizing={false}
-                    style={{ zIndex: 20 }}
-                  >
-                    <div
-                      style={{
-                        color: textColor,
-                        fontWeight: "bold",
-                        fontSize: "22px",
-                        textAlign: "center",
-                        cursor: "move",
-                        userSelect: "none",
-                        textShadow: "1px 1px 2px rgba(0,0,0,0.4)",
-                      }}
-                    >
-                      {text}
-                    </div>
-                  </Rnd>
                 </div>
               </div>
 
               {/* FOOTER */}
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={onClose}>
-                  Close
-                </button>
-                <button className="btn btn-primary" onClick={handleSave}>
-                  Save
-                </button>
+              <div className="modal-footer d-flex justify-content-between align-items-center">
+                <div>
+                  {/* ✅ Zoom Controls */}
+                  <button className="btn btn-outline-secondary me-2" onClick={handleZoomOut}>
+                    -
+                  </button>
+                  <button className="btn btn-outline-secondary" onClick={handleZoomIn}>
+                    +
+                  </button>
+                </div>
+                <div>
+                  <button className="btn btn-secondary me-2" onClick={onClose}>
+                    Close
+                  </button>
+                  <button className="btn btn-primary" onClick={handleSave}>
+                    Save
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* ✅ Wall Preview Modal with merged image */}
+      {/* Preview Modal */}
       <PreviewModal
         show={showPreview}
         onClose={() => setShowPreview(false)}
