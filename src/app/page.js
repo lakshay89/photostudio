@@ -7,6 +7,7 @@ import Features from "./Components/Features/Features";
 import ReelSection from "./Components/ReelSection/reelSection";
 import VideoSection from "./Components/VideoSection/VideoSection";
 import VideoSection2 from "./Components/VideoSection2/VideoSection2";
+import View from "./Components/View";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
     <VideoSection2/>
    <Testimonial/>
    <Features/>
+   <View />
    </>
   );
 }
